@@ -2,118 +2,81 @@
 name: acomo
 description: >
   プラットフォーム利用者（acomo 上でワークフローモデルを使って開発する開発者）向け。
-  公開API・ワークフローの考え方・CLIによるモデル取得とプロセス操作を支援する。
-  acomo 本体の内部実装は対象外。自前アプリでワークフロー画面や連携を構築する際のガイド。
-user-invocable: true
-allowed-tools: Bash(acomo *)
-argument-hint: [modelId]
+  acomo CLI および公開 API の標準的な使い方（モデル取得・プロセス操作・認証）を案内する。
+  acomo 本体の内部実装は対象外。
+  acomo CLI を使うとき、ワークフローやプロセスの操作・モデル定義の確認を行うときに参照する。
 ---
 
-# acomo ワークフロー操作ガイド
+# acomo CLI / API 標準ガイド
 
-acomo はワークフロー管理プラットフォームです。CLI や公開 API でモデル定義の取得・プロセス操作を行い、利用者が自前のアプリでワークフロー画面や連携を構築できるようにするためのガイドです。
+acomo はワークフロー管理プラットフォームです。このスキルは **acomo CLI と公開 API の標準的な使い方**（モデル一覧・モデル定義取得・プロセス開始・保存・提出・承認・却下・差し戻しなど）を案内します。
 
-## ワークフロー操作の典型フロー
+## 認証エラー時の扱い
 
-### Step 1: モデル一覧を取得
+**認証エラー（401/403、終了コード 2）が出た場合は、試行錯誤で解決しようとしないこと。** 速やかにユーザーにログインを促し、処理を中断する。
 
-```bash
-acomo listWorkflowModels
-```
+- `acomo login` の実行
 
-モデル ID、名前、ノード数、フィールド数などを取得します。出力形式は `acomo listWorkflowModels --help` で確認してください。
+## 認証
 
-### Step 2: モデル定義を理解する
+アクセストークンはブラウザで acomo にログインした後に入手し、CLI で指定する。
 
 ```bash
-acomo describe-model --model-id $ARGUMENTS
+# 環境変数で認証（非インタラクティブ向け）
+export ACOMO_ACCESS_TOKEN="your-token"
+export ACOMO_TENANT_ID="your-tenant-id"
+
+# または login で保存
+acomo login --tenant-id <tenantId> --access-token <accessToken>
 ```
 
-ワークフローのフロー（ノード・エッジ）、データスキーマ、データアクセスポリシーを構造的なテキストで出力します。
+| 環境変数             | 説明                                            | 必須 |
+| -------------------- | ----------------------------------------------- | ---- |
+| `ACOMO_ACCESS_TOKEN` | アクセストークン                                | Yes  |
+| `ACOMO_TENANT_ID`    | テナント ID                                     | Yes  |
+| `ACOMO_BASE_URL`     | API Base URL（省略時: `https://acomo.app`）     | No   |
 
-### Step 3: 完全な定義が必要な場合
+CLI の出力は JSON です。パラメータは `acomo <operationId> --help` で確認する。
+
+## 呼び出し形式
 
 ```bash
-acomo getWorkflowModel '{"modelId":"$ARGUMENTS"}'
+acomo <operationId> [JSON引数]
 ```
-
-definition / dataSchema / policy の完全な JSON を取得します。コンテキストを大量に消費するため、必要な場合のみ使用してください。
-
-### Step 4: プロセスを操作する
 
 ```bash
-# プロセス開始
-acomo startWorkflowProcess '{"modelId":"<MODEL_ID>"}'
+# 引数あり
+acomo getWorkflowModel '{"modelId":"<ID>"}'
 
-# 提出
-acomo submitWorkflowProcess '{"processId":"<PROCESS_ID>"}'
-# または特定ノードを指定
-acomo submitWorkflowProcessWithNodeId '{"processId":"<PROCESS_ID>","nodeId":"<NODE_ID>"}'
-
-# 承認
-acomo approveWorkflowProcess '{"processId":"<PROCESS_ID>"}'
-
-# 却下
-acomo rejectWorkflowProcess '{"processId":"<PROCESS_ID>"}'
-
-# 差し戻し
-acomo revertWorkflowProcess '{"processId":"<PROCESS_ID>","nodeId":"<NODE_ID>"}'
-
-# プロセスデータ保存
-acomo saveWorkflowProcess '{"processId":"<PROCESS_ID>","updateProcessDto":{"data":{...}}}'
+# stdin から
+echo '{"modelId":"<ID>"}' | acomo getWorkflowModel
 ```
 
-## コマンドグループ早見表
+## 標準フロー
 
-### Model（モデル管理）
+1. **モデル一覧**: `acomo listWorkflowModels` で対象モデルを特定する。フィルタ例: `acomo listWorkflowModels '{"filter":"{\"name\":{\"contains\":\"申請\"}}","take":10}'`
+2. **モデル定義**: `acomo getWorkflowModel '{"modelId":"<ID>"}'` で definition / dataSchema / policy の JSON を取得する。
+3. **プロセス操作**: 必要に応じて `startWorkflowProcess` / `saveWorkflowProcess` / `submitWorkflowProcess` / `submitWorkflowProcessWithNodeId` / `approveWorkflowProcess` / `rejectWorkflowProcess` / `revertWorkflowProcess` を使う。自分のプロセス一覧は `listMyProcesses` や `listProcessWithNodeActions` を検討する。
 
-| コマンド | 必須パラメータ | 説明 |
-| --- | --- | --- |
-| `listWorkflowModels` | - | モデル一覧を取得 |
-| `getWorkflowModel` | modelId | 公開中モデルを取得 |
-| `getWorkflowModelWithLatestModelHistory` | modelId | 編集中モデルを取得 |
-| `createWorkflowModel` | createModelDto (body) | モデル作成 |
-| `saveWorkflowModel` | modelId, updateModelDto (body) | モデル保存 |
-| `publishWorkflowModel` | modelId | モデル公開 |
-| `deleteWorkflowModel` | modelId | モデル削除 |
-| `describe-model` | --model-id | モデル定義の構造的要約 |
+## 主要コマンド早見
 
-### Engine（プロセス実行）
-
-| コマンド | 必須パラメータ | 説明 |
-| --- | --- | --- |
-| `startWorkflowProcess` | modelId | プロセス開始 |
-| `saveWorkflowProcess` | processId | プロセスデータ保存 |
-| `submitWorkflowProcess` | processId | 提出 |
-| `approveWorkflowProcess` | processId | 承認 |
-| `rejectWorkflowProcess` | processId | 却下 |
-| `revertWorkflowProcess` | processId, nodeId | 差し戻し |
-
-### MyModel / MyProcess（自分のタスク）
-
-| コマンド | 説明 |
+| 用途 | コマンド |
 | --- | --- |
-| `listMyModels` | 権限ありモデル一覧 |
-| `getMyModel` | 権限ありモデル取得 (modelId) |
-| `listMyProcesses` | 自分のプロセス一覧 |
-| `getMyProcesses` | 自分のプロセス取得 (processId) |
-| `listModelWithNodeActions` | モデル+アクション可能ノード一覧 |
-| `listProcessWithNodeActions` | プロセス+アクション可能ノード一覧 |
+| モデル一覧 | `listWorkflowModels` |
+| モデル定義取得 | `getWorkflowModel`（modelId 必須） |
+| 編集中モデル | `getWorkflowModelWithLatestModelHistory` |
+| プロセス開始 | `startWorkflowProcess` |
+| データ保存 | `saveWorkflowProcess` |
+| 提出 | `submitWorkflowProcess` / `submitWorkflowProcessWithNodeId` |
+| 承認 | `approveWorkflowProcess` |
+| 却下 | `rejectWorkflowProcess` |
+| 差し戻し | `revertWorkflowProcess`（processId, nodeId） |
+| 自分のプロセス一覧 | `listMyProcesses` / `listProcessWithNodeActions` |
+| 自分のプロセス取得 | `getMyProcesses` / `getProcessWithNodeActions` |
 
-## 自前アプリでワークフローを扱うときの考え方
+プロセス操作では、タスクノードでは dataSchema に沿ったデータを `saveWorkflowProcess` の `updateProcessDto.data` で送る。遷移は submit / approve / reject / revert で実行する。policy の write/read に従い、現在ノードで編集可能な項目だけを扱う。
 
-### モデル取得で得られる情報の使い道
+## 補足
 
-- **`listWorkflowModels`**: 利用可能なワークフローモデル一覧（ID・名前・ノード数・フィールド数）を取得。どのモデルを扱うか選ぶときに使う。出力形式は `acomo listWorkflowModels --help` で確認すること。
-- **`describe-model --model-id <ID>`**: 指定モデルのフロー（ノード・エッジ）、データスキーマ、データアクセスポリシーをテキストで要約。**どのノードでどの操作（提出・承認・却下など）ができるか**、**各ノードでどのフィールドを編集・参照できるか**を把握できる。
-- **`getWorkflowModel`**: definition / dataSchema / policy の完全な JSON。自前アプリでフォームや画面を組み立てる際に厳密な型が必要な場合のみ利用するとよい（出力が大きいためコンテキストを消費する）。
-
-### プロセス操作の流れ
-
-1. **開始**: `startWorkflowProcess` で modelId を指定してプロセスを開始する。
-2. **データ入力・保存**: タスクノードでは dataSchema に沿ったデータを入力する。`saveWorkflowProcess` で processId と `updateProcessDto.data` を送り、途中保存できる。
-3. **遷移**: 提出は `submitWorkflowProcess`（必要に応じて nodeId 指定）、承認は `approveWorkflowProcess`、却下は `rejectWorkflowProcess`、差し戻しは `revertWorkflowProcess`（processId と nodeId）で実行する。
-
-describe-model の「Data Access Policy」を見れば、各ノードで write/read できるフィールドが分かる。自前アプリでは、現在のノードに応じて編集可能な項目だけをフォームに出すようにするとよい。
-
-データ構造（definition / dataSchema / policy / 条件式）の詳細は reference.md を参照してください。
+- データ構造（definition / dataSchema / policy / 条件式）の詳細は [reference.md](reference.md) を参照する。
+- 全コマンド一覧は `acomo --help` で確認する。

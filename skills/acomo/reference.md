@@ -1,5 +1,7 @@
 # acomo データ構造リファレンス
 
+acomo スキル（SKILL.md）の補助資料。`getWorkflowModel` で取得する JSON の definition / dataSchema / policy を読むときの型と用語をまとめる。
+
 ## ModelDefinition（ワークフロー定義）
 
 ```typescript
