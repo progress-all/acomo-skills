@@ -1,0 +1,3649 @@
+{
+  "type": "object",
+  "properties": {
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "type": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "to",
+          "from",
+          "type"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "const": "event"
+              },
+              "eventType": {
+                "type": "string",
+                "enum": [
+                  "start",
+                  "end"
+                ]
+              },
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "actionPolicies": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "manage",
+                        "read",
+                        "approve",
+                        "reject",
+                        "submit",
+                        "revert",
+                        "start",
+                        "update"
+                      ]
+                    },
+                    "allow": {
+                      "type": "object",
+                      "properties": {
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            ">",
+                            ">=",
+                            "<",
+                            "<=",
+                            "==",
+                            "!=",
+                            "has",
+                            "hasAncestorsOf",
+                            "hasDescendantsOf",
+                            "hasParentsOf",
+                            "hasChildrenOf",
+                            "and",
+                            "or",
+                            "+",
+                            "-",
+                            "*",
+                            "/",
+                            "**",
+                            "%"
+                          ]
+                        },
+                        "expression1": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "operator": {
+                                  "type": "string",
+                                  "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "==",
+                                    "!=",
+                                    "has",
+                                    "hasAncestorsOf",
+                                    "hasDescendantsOf",
+                                    "hasParentsOf",
+                                    "hasChildrenOf",
+                                    "and",
+                                    "or",
+                                    "+",
+                                    "-",
+                                    "*",
+                                    "/",
+                                    "**",
+                                    "%"
+                                  ]
+                                },
+                                "expression1": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "expression2": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "expression1",
+                                "expression2"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "expression2": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "operator": {
+                                  "type": "string",
+                                  "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "==",
+                                    "!=",
+                                    "has",
+                                    "hasAncestorsOf",
+                                    "hasDescendantsOf",
+                                    "hasParentsOf",
+                                    "hasChildrenOf",
+                                    "and",
+                                    "or",
+                                    "+",
+                                    "-",
+                                    "*",
+                                    "/",
+                                    "**",
+                                    "%"
+                                  ]
+                                },
+                                "expression1": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "expression2": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "expression1",
+                                "expression2"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "operator",
+                        "expression1",
+                        "expression2"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "allow"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "type",
+              "eventType"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "const": "task"
+              },
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "canRevert": {
+                "type": "boolean"
+              },
+              "actionPolicies": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "manage",
+                        "read",
+                        "approve",
+                        "reject",
+                        "submit",
+                        "revert",
+                        "start",
+                        "update"
+                      ]
+                    },
+                    "allow": {
+                      "type": "object",
+                      "properties": {
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            ">",
+                            ">=",
+                            "<",
+                            "<=",
+                            "==",
+                            "!=",
+                            "has",
+                            "hasAncestorsOf",
+                            "hasDescendantsOf",
+                            "hasParentsOf",
+                            "hasChildrenOf",
+                            "and",
+                            "or",
+                            "+",
+                            "-",
+                            "*",
+                            "/",
+                            "**",
+                            "%"
+                          ]
+                        },
+                        "expression1": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "operator": {
+                                  "type": "string",
+                                  "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "==",
+                                    "!=",
+                                    "has",
+                                    "hasAncestorsOf",
+                                    "hasDescendantsOf",
+                                    "hasParentsOf",
+                                    "hasChildrenOf",
+                                    "and",
+                                    "or",
+                                    "+",
+                                    "-",
+                                    "*",
+                                    "/",
+                                    "**",
+                                    "%"
+                                  ]
+                                },
+                                "expression1": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "expression2": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "expression1",
+                                "expression2"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "expression2": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "operator": {
+                                  "type": "string",
+                                  "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "==",
+                                    "!=",
+                                    "has",
+                                    "hasAncestorsOf",
+                                    "hasDescendantsOf",
+                                    "hasParentsOf",
+                                    "hasChildrenOf",
+                                    "and",
+                                    "or",
+                                    "+",
+                                    "-",
+                                    "*",
+                                    "/",
+                                    "**",
+                                    "%"
+                                  ]
+                                },
+                                "expression1": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "expression2": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "expression1",
+                                "expression2"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "operator",
+                        "expression1",
+                        "expression2"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "allow"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "const": "exclusiveFork"
+              },
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "conditions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "normal",
+                        "approve",
+                        "reject",
+                        "submit"
+                      ]
+                    },
+                    "expression": {
+                      "type": "object",
+                      "properties": {
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            ">",
+                            ">=",
+                            "<",
+                            "<=",
+                            "==",
+                            "!=",
+                            "has",
+                            "hasAncestorsOf",
+                            "hasDescendantsOf",
+                            "hasParentsOf",
+                            "hasChildrenOf",
+                            "and",
+                            "or",
+                            "+",
+                            "-",
+                            "*",
+                            "/",
+                            "**",
+                            "%"
+                          ]
+                        },
+                        "expression1": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "operator": {
+                                  "type": "string",
+                                  "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "==",
+                                    "!=",
+                                    "has",
+                                    "hasAncestorsOf",
+                                    "hasDescendantsOf",
+                                    "hasParentsOf",
+                                    "hasChildrenOf",
+                                    "and",
+                                    "or",
+                                    "+",
+                                    "-",
+                                    "*",
+                                    "/",
+                                    "**",
+                                    "%"
+                                  ]
+                                },
+                                "expression1": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "expression2": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "expression1",
+                                "expression2"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "expression2": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "operator": {
+                                  "type": "string",
+                                  "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "==",
+                                    "!=",
+                                    "has",
+                                    "hasAncestorsOf",
+                                    "hasDescendantsOf",
+                                    "hasParentsOf",
+                                    "hasChildrenOf",
+                                    "and",
+                                    "or",
+                                    "+",
+                                    "-",
+                                    "*",
+                                    "/",
+                                    "**",
+                                    "%"
+                                  ]
+                                },
+                                "expression1": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "expression2": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "expression1",
+                                "expression2"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "operator",
+                        "expression1",
+                        "expression2"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "destination": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "expression",
+                    "destination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "const": "parallelFork"
+              },
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "keys": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "enum": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "name",
+                  "enum"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "const": "parallelJoin"
+              },
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ]
+              },
+              "conditions": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": [
+                        "normal",
+                        "approve",
+                        "reject",
+                        "submit"
+                      ]
+                    },
+                    "expression": {
+                      "type": "object",
+                      "properties": {
+                        "operator": {
+                          "type": "string",
+                          "enum": [
+                            ">",
+                            ">=",
+                            "<",
+                            "<=",
+                            "==",
+                            "!=",
+                            "has",
+                            "hasAncestorsOf",
+                            "hasDescendantsOf",
+                            "hasParentsOf",
+                            "hasChildrenOf",
+                            "and",
+                            "or",
+                            "+",
+                            "-",
+                            "*",
+                            "/",
+                            "**",
+                            "%"
+                          ]
+                        },
+                        "expression1": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "operator": {
+                                  "type": "string",
+                                  "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "==",
+                                    "!=",
+                                    "has",
+                                    "hasAncestorsOf",
+                                    "hasDescendantsOf",
+                                    "hasParentsOf",
+                                    "hasChildrenOf",
+                                    "and",
+                                    "or",
+                                    "+",
+                                    "-",
+                                    "*",
+                                    "/",
+                                    "**",
+                                    "%"
+                                  ]
+                                },
+                                "expression1": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "expression2": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "expression1",
+                                "expression2"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        },
+                        "expression2": {
+                          "oneOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "object",
+                              "properties": {
+                                "operator": {
+                                  "type": "string",
+                                  "enum": [
+                                    ">",
+                                    ">=",
+                                    "<",
+                                    "<=",
+                                    "==",
+                                    "!=",
+                                    "has",
+                                    "hasAncestorsOf",
+                                    "hasDescendantsOf",
+                                    "hasParentsOf",
+                                    "hasChildrenOf",
+                                    "and",
+                                    "or",
+                                    "+",
+                                    "-",
+                                    "*",
+                                    "/",
+                                    "**",
+                                    "%"
+                                  ]
+                                },
+                                "expression1": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                },
+                                "expression2": {
+                                  "oneOf": [
+                                    {
+                                      "type": "string"
+                                    },
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "object",
+                                      "properties": {
+                                        "operator": {
+                                          "type": "string",
+                                          "enum": [
+                                            ">",
+                                            ">=",
+                                            "<",
+                                            "<=",
+                                            "==",
+                                            "!=",
+                                            "has",
+                                            "hasAncestorsOf",
+                                            "hasDescendantsOf",
+                                            "hasParentsOf",
+                                            "hasChildrenOf",
+                                            "and",
+                                            "or",
+                                            "+",
+                                            "-",
+                                            "*",
+                                            "/",
+                                            "**",
+                                            "%"
+                                          ]
+                                        },
+                                        "expression1": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        },
+                                        "expression2": {
+                                          "oneOf": [
+                                            {
+                                              "type": "string"
+                                            },
+                                            {
+                                              "type": "number"
+                                            },
+                                            {
+                                              "type": "object",
+                                              "properties": {
+                                                "operator": {
+                                                  "type": "string",
+                                                  "enum": [
+                                                    ">",
+                                                    ">=",
+                                                    "<",
+                                                    "<=",
+                                                    "==",
+                                                    "!=",
+                                                    "has",
+                                                    "hasAncestorsOf",
+                                                    "hasDescendantsOf",
+                                                    "hasParentsOf",
+                                                    "hasChildrenOf",
+                                                    "and",
+                                                    "or",
+                                                    "+",
+                                                    "-",
+                                                    "*",
+                                                    "/",
+                                                    "**",
+                                                    "%"
+                                                  ]
+                                                },
+                                                "expression1": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                },
+                                                "expression2": {
+                                                  "oneOf": [
+                                                    {
+                                                      "type": "string"
+                                                    },
+                                                    {
+                                                      "type": "number"
+                                                    }
+                                                  ]
+                                                }
+                                              },
+                                              "required": [
+                                                "operator",
+                                                "expression1",
+                                                "expression2"
+                                              ],
+                                              "additionalProperties": false
+                                            }
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "operator",
+                                        "expression1",
+                                        "expression2"
+                                      ],
+                                      "additionalProperties": false
+                                    }
+                                  ]
+                                }
+                              },
+                              "required": [
+                                "operator",
+                                "expression1",
+                                "expression2"
+                              ],
+                              "additionalProperties": false
+                            }
+                          ]
+                        }
+                      },
+                      "required": [
+                        "operator",
+                        "expression1",
+                        "expression2"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "destination": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "expression",
+                    "destination"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "type"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,276 @@
+{
+  "type": "object",
+  "properties": {
+    "type": {
+      "const": "object"
+    },
+    "additionalProperties": {
+      "const": false
+    },
+    "properties": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "_order": {
+                "type": "number"
+              },
+              "_acomoType": {
+                "const": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "_order",
+              "_acomoType"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "_order": {
+                "type": "number"
+              },
+              "format": {
+                "const": "date"
+              },
+              "_acomoType": {
+                "const": "date"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "_order",
+              "_acomoType",
+              "format"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "number"
+              },
+              "title": {
+                "type": "string"
+              },
+              "_order": {
+                "type": "number"
+              },
+              "_acomoType": {
+                "const": "number"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "_order",
+              "_acomoType"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "_order": {
+                "type": "number"
+              },
+              "enum": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "_acomoType": {
+                "const": "enum"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "_order",
+              "_acomoType",
+              "enum"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "array"
+              },
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "string"
+                  },
+                  "pattern": {
+                    "const": "[^/]+"
+                  }
+                },
+                "required": [
+                  "type",
+                  "pattern"
+                ],
+                "additionalProperties": false
+              },
+              "title": {
+                "type": "string"
+              },
+              "_order": {
+                "type": "number"
+              },
+              "_acomoType": {
+                "const": "file"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "_order",
+              "_acomoType",
+              "items"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "array"
+              },
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "string",
+                      "number"
+                    ]
+                  },
+                  "format": {
+                    "const": "date"
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              "title": {
+                "type": "string"
+              },
+              "_order": {
+                "type": "number"
+              },
+              "_acomoType": {
+                "const": "array"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "type",
+              "_order",
+              "_acomoType",
+              "items"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "object"
+              },
+              "title": {
+                "type": "string"
+              },
+              "_order": {
+                "type": "number"
+              },
+              "_acomoType": {
+                "const": "record"
+              },
+              "_recordKey": {
+                "type": "string",
+                "not": {
+                  "const": ""
+                }
+              },
+              "description": {
+                "type": "string"
+              },
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "string",
+                      "number"
+                    ]
+                  }
+                },
+                "required": [
+                  "type"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "type",
+              "_order",
+              "_acomoType",
+              "_recordKey",
+              "additionalProperties"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "type"
+  ]
+}
