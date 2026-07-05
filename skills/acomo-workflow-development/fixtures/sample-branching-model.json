@@ -1,0 +1,286 @@
+{
+  "name": "購買申請（金額分岐）",
+  "description": "条件分岐（exclusiveFork）サンプル。金額 100,000 以上は管理者承認を追加する購買申請。ローカル開発スタックで CLI / 画面から全結末経路を実走確認済み（2026-07-05）。 actionPolicies の <ROLE_ID_...> プレースホルダは登録先テナントの実ロール ID（listRoles で確認）に置換してから使う。",
+  "definition": {
+    "nodes": [
+      {
+        "id": "1",
+        "name": "開始",
+        "type": "event",
+        "eventType": "start",
+        "actionPolicies": [
+          {
+            "type": "start",
+            "allow": {
+              "operator": "has",
+              "expression1": "$user.roles",
+              "expression2": "\"<ROLE_ID_社員>\""
+            },
+            "description": "社員は誰でも購買申請を開始できます"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "name": "購買の申請",
+        "type": "task",
+        "actionPolicies": [
+          {
+            "type": "manage",
+            "allow": {
+              "operator": "==",
+              "expression1": "$user.id",
+              "expression2": "$executor(1).id"
+            },
+            "description": "起票した本人だけが申請内容を編集・提出できます"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "name": "経理の承認",
+        "type": "task",
+        "actionPolicies": [
+          {
+            "type": "manage",
+            "allow": {
+              "operator": "has",
+              "expression1": "$user.roles",
+              "expression2": "\"<ROLE_ID_経理担当者>\""
+            },
+            "description": "経理担当者ロールの保持者が承認・却下できます"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "name": "金額による分岐",
+        "type": "exclusiveFork",
+        "conditions": [
+          {
+            "expression": {
+              "operator": ">=",
+              "expression1": "$data.amount",
+              "expression2": 100000
+            },
+            "destination": "5"
+          },
+          {
+            "expression": {
+              "operator": "<",
+              "expression1": "$data.amount",
+              "expression2": 100000
+            },
+            "destination": "6"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "name": "管理者の承認",
+        "type": "task",
+        "actionPolicies": [
+          {
+            "type": "manage",
+            "allow": {
+              "operator": "has",
+              "expression1": "$user.roles",
+              "expression2": "\"<ROLE_ID_システム管理者>\""
+            },
+            "description": "システム管理者ロールの保持者が高額購買を最終承認できます"
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "name": "終了（承認済み）",
+        "type": "event",
+        "eventType": "end"
+      },
+      {
+        "id": "7",
+        "name": "終了（経理却下）",
+        "type": "event",
+        "eventType": "end"
+      },
+      {
+        "id": "8",
+        "name": "終了（管理者却下）",
+        "type": "event",
+        "eventType": "end"
+      }
+    ],
+    "edges": [
+      {
+        "from": "1",
+        "to": "2",
+        "type": [
+          "normal"
+        ]
+      },
+      {
+        "from": "2",
+        "to": "3",
+        "type": [
+          "submit"
+        ]
+      },
+      {
+        "from": "3",
+        "to": "4",
+        "type": [
+          "approve"
+        ]
+      },
+      {
+        "from": "3",
+        "to": "7",
+        "type": [
+          "reject"
+        ]
+      },
+      {
+        "from": "4",
+        "to": "5",
+        "type": [
+          "normal"
+        ]
+      },
+      {
+        "from": "4",
+        "to": "6",
+        "type": [
+          "normal"
+        ]
+      },
+      {
+        "from": "5",
+        "to": "6",
+        "type": [
+          "approve"
+        ]
+      },
+      {
+        "from": "5",
+        "to": "8",
+        "type": [
+          "reject"
+        ]
+      }
+    ]
+  },
+  "dataSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "itemName": {
+        "type": "string",
+        "title": "品名",
+        "description": "購入する物品・サービスの名称",
+        "_order": 10,
+        "_acomoType": "string"
+      },
+      "amount": {
+        "type": "number",
+        "title": "金額（円）",
+        "description": "税込の購入金額。10万円以上は管理者の追加承認が必要",
+        "_order": 20,
+        "_acomoType": "number"
+      },
+      "category": {
+        "type": "string",
+        "enum": [
+          "備品",
+          "ソフトウェア",
+          "サービス",
+          "その他"
+        ],
+        "title": "購買区分",
+        "description": "購買の種別",
+        "_order": 30,
+        "_acomoType": "enum"
+      },
+      "desiredDeliveryDate": {
+        "type": "string",
+        "format": "date",
+        "title": "希望納期",
+        "description": "納品を希望する日付",
+        "_order": 40,
+        "_acomoType": "date"
+      },
+      "reason": {
+        "type": "string",
+        "title": "購入理由",
+        "description": "購入の目的・理由",
+        "_order": 50,
+        "_acomoType": "string"
+      },
+      "accountingComment": {
+        "type": "string",
+        "title": "経理コメント",
+        "description": "経理担当者が入力するコメント",
+        "_order": 60,
+        "_acomoType": "string"
+      },
+      "executiveComment": {
+        "type": "string",
+        "title": "管理者コメント",
+        "description": "管理者が入力するコメント",
+        "_order": 70,
+        "_acomoType": "string"
+      }
+    }
+  },
+  "policy": {
+    "2": {
+      "itemName": "write",
+      "amount": "write",
+      "category": "write",
+      "desiredDeliveryDate": "write",
+      "reason": "write"
+    },
+    "3": {
+      "itemName": "read",
+      "amount": "read",
+      "category": "read",
+      "desiredDeliveryDate": "read",
+      "reason": "read",
+      "accountingComment": "write"
+    },
+    "5": {
+      "itemName": "read",
+      "amount": "read",
+      "category": "read",
+      "desiredDeliveryDate": "read",
+      "reason": "read",
+      "accountingComment": "read",
+      "executiveComment": "write"
+    },
+    "6": {
+      "itemName": "read",
+      "amount": "read",
+      "category": "read",
+      "desiredDeliveryDate": "read",
+      "reason": "read",
+      "accountingComment": "read",
+      "executiveComment": "read"
+    },
+    "7": {
+      "itemName": "read",
+      "amount": "read",
+      "category": "read",
+      "desiredDeliveryDate": "read",
+      "reason": "read",
+      "accountingComment": "read"
+    },
+    "8": {
+      "itemName": "read",
+      "amount": "read",
+      "category": "read",
+      "desiredDeliveryDate": "read",
+      "reason": "read",
+      "accountingComment": "read",
+      "executiveComment": "read"
+    }
+  }
+}

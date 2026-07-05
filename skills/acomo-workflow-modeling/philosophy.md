@@ -49,7 +49,7 @@ acomo のワークフローモデルは「**現実の業務フローを忠実に
 | `task` | 人間が操作を行うノード（申請・承認・確認・入力）|
 | `exclusiveFork` | 条件によって分岐するノード（データの値で自動判断）|
 | `parallelFork` | 複数の承認者が同時並行でレビューを開始するノード |
-| `parallelJoin` | 並列の全ルートが揃ったら次に進むノード |
+| `parallelJoin` | 並列の全ルートが揃ったら次に進むノード。**`conditions` が必須**（`$token.approveCount` 等で合流条件と遷移先を指定 — patterns.md パターン 4） |
 
 ---
 
@@ -57,14 +57,17 @@ acomo のワークフローモデルは「**現実の業務フローを忠実に
 
 ### FlowType（遷移種別）の使い分け
 
+**SSOT**: ランタイムの `FlowType`（モノレポ内の単一ソース: `acomo-backend/src/workflow/model/edge.entity.ts`）。使える値は下表の 6 種のみ。生成スキーマ（[`schemas/definition.json`](schemas/definition.json)）上は `edges[].type` が自由文字列のためスキーマ検証では拒否されない — 値の妥当性は acomo-workflow-development スキルの検証ハーネス（`E_EDGE_TYPE`）が検出する。
+
 | 種別 | 使いどき |
 |------|---------|
-| `normal` | 開始イベント → 最初のタスクへの遷移。自動的に進む |
+| `normal` | 開始イベント → 最初のタスクへの遷移。並列分岐の子タスクへの分岐など |
 | `submit` | タスクノードから次のタスク（または承認ノード）へ提出する遷移 |
 | `approve` | 承認タスクノードから「承認された場合」の遷移先へ |
 | `reject` | 承認タスクノードから「却下された場合」の遷移先へ（通常は終了ノード）|
-| `revert` | 承認タスクノードから「差し戻し」の場合の遷移先へ（申請ノードに戻す）|
-| `yes` / `no` | `exclusiveFork` ノードからの条件分岐 |
+| `yes` / `no` | 条件分岐（`exclusiveFork` の `conditions` など、スキーマ上は `condition.type` に `normal` / `approve` / `reject` / `submit` の列挙がある箇所とエッジの `FlowType` が異なる場合がある。詳細は `model-schemas.json` の `condition` 定義を参照） |
+
+**注意**: `revert` は **ノードアクション種別**（`NodeActionType`）としては存在するが、**エッジの `FlowType` 列挙子としては `edge.entity.ts` に含まれない**。差し戻しの業務表現はプロセス実行時の差し戻し API・メタデータ側の仕様に従い、モデル JSON の edge.type には上表の値のみを使う。
 
 **Edge ID の命名規則**: `e{from}-{to}`（例: `e1-2`、`e3-4`）
 
@@ -104,18 +107,22 @@ acomo のワークフローモデルは「**現実の業務フローを忠実に
 | 承認者が参照するデータ | ノードIDやフロー制御のための内部フラグ |
 | 業務上必要な情報 | システムが自動生成するタイムスタンプ等 |
 
-### 使用できるデータ型（5種のみ）
+### 使用できるデータ型（プロパティごとの oneOf）
 
-| 型 | `_acomoType` | 用途 |
-|----|-------------|------|
-| `string` | `string` | テキスト入力（件名、理由、備考等）|
-| `number` | `number` | 数値（金額、日数、数量等）|
-| `date` | `date` | 日付（申請日、開始日等）|
-| `file` | `file` | ファイル添付（証明書、領収書等）|
-| `enum`（文字列配列） | `enum` | 選択肢（部署、申請区分等）|
+**SSOT**: 同梱の生成スキーマ [`schemas/dataSchema.json`](schemas/dataSchema.json) の `properties` の `oneOf` 定義（モノレポ内の単一ソースは `acomo-backend/src/workflow/model/schemas/model-schemas.json`）。
 
-- `object`、`array` などの複合型は**使用不可**
-- enum は `type: "string"` と `enum` 配列および `_acomoType: "enum"` で表現する（[patterns.md](patterns.md)）
+| `_acomoType`（代表） | JSON 上の形の要点 | 用途 |
+|---------------------|------------------|------|
+| `string` | `type: "string"`、`_acomoType: "string"` | テキスト入力 |
+| `number` | `type: "number"`、`_acomoType: "number"` | 数値 |
+| `date` | `type: "string"`、`format: "date"`、`_acomoType: "date"` | 日付 |
+| `enum` | `type: "string"`、`enum: [...]`、`_acomoType: "enum"` | 選択肢 |
+| `file` | `type: "array"`（ファイル用の `items` 制約あり）、`_acomoType: "file"` | ファイル添付 |
+| `array` | `type: "array"`、`items` で要素型指定、`_acomoType: "array"` | 配列（要素は string / number 等に制限） |
+| `record` | `type: "object"`、`_acomoType: "record"`、`_recordKey` と `additionalProperties` | レコード型 |
+
+- ルートは必ず `type: "object"`、`additionalProperties: false`、`properties` を持つ（スキーマ必須に準拠）。
+- enum 表現の詳細は [patterns.md](patterns.md) を参照。
 
 ### キー命名・表示順序
 
@@ -143,7 +150,7 @@ acomo のワークフローモデルは「**現実の業務フローを忠実に
 - **キー（第2層）**: `dataSchema.properties` にある**プロパティ名**と一致させる。
 - **値**: `"write"` はそのノードで編集可能、`"read"` は参照のみ。
 
-ノード ID に対応するエントリがない場合、またはそのノードで列挙されていないプロパティについては、**そのノードではそのフィールドにアクセスできない**扱いになる（詳細は [acomo の reference.md](.agents/skills/acomo/reference.md) の ModelPolicy 節）。
+ノード ID に対応するエントリがない場合、またはそのノードで列挙されていないプロパティについては、**そのノードではそのフィールドにアクセスできない**扱いになる（詳細は [acomo の reference.md](../acomo/reference.md) の ModelPolicy 節）。
 
 ### 設計の指針
 
@@ -158,7 +165,7 @@ acomo のワークフローモデルは「**現実の業務フローを忠実に
 | **policy**（モデル直下） | ノードごとの**データ項目**の read / write |
 | **actionPolicies**（各ノードの任意プロパティ） | 誰が **start / submit / approve** などの**アクション**を実行できるかの条件式 |
 
-ロールや起票者だけが開始できる等の**操作権限**は definition の `actionPolicies` で扱う。**フィールド単位の編集可否**は policy で扱う。式の構文は [acomo の reference.md](.agents/skills/acomo/reference.md) の Node・BinaryExpression を参照。
+ロールや起票者だけが開始できる等の**操作権限**は definition の `actionPolicies` で扱う。**フィールド単位の編集可否**は policy で扱う。式の構文は [acomo の reference.md](../acomo/reference.md) の Node・BinaryExpression を参照。
 
 ---
 
@@ -170,7 +177,7 @@ acomo のワークフローモデルは「**現実の業務フローを忠実に
 | `status` フィールドをデータスキーマに追加する | 削除する（エンジンが管理）|
 | 終了ノードが1つしかない | 承認/却下で別の終了ノードを作る |
 | エッジ type を配列でなく文字列で指定する | 必ず配列 `["approve"]` で指定する |
-| `object` や `array` 型を使う | 5種の型のみ使用する |
+| スキーマ未定義の形でプロパティを書く | `model-schemas.json` の `dataSchema` oneOf に沿う |
 | 複数承認者を直列のタスクでモデル化してしまう | 同時判断なら `parallelFork/Join` を使う |
 | policy のノード ID をノード名で書く、または誤った ID を参照する | definition の **id** と完全一致させる |
 | 承認タスクで申請内容の項目をすべて `write` のままにする | 参照のみなら `read`、承認者入力欄だけ `write` など業務に合わせる |

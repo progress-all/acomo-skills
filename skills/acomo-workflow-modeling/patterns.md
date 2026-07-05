@@ -1,7 +1,11 @@
 # acomo ワークフローパターン集
 
-acomo スキル（SKILL.md）の補助資料。
+acomo-workflow-modeling スキル（[SKILL.md](SKILL.md)）の補助資料。
 代表的な業務ワークフローのモデル定義（definition + dataSchema + policy）サンプルをまとめる。
+
+**実走確認済みの完全なお手本**（登録 → 公開 → 全経路ウォークスルーまで検証済みのモデル JSON）は、併設される
+`acomo-workflow-development` スキルの [`fixtures/`](../acomo-workflow-development/fixtures/)（基本承認 / 条件分岐 /
+並列審査 / 差し戻しループの 4 本）を正とする。本書のパターン解説と JSON 断片が fixtures と食い違う場合は fixtures に従う。
 
 `createWorkflowModel` のリクエストボディは OpenAPI 上 **CreateModelDto**（フラットな JSON）。トップレベルに `name` / `definition` / `dataSchema` / `policy` を並べる（`createModelDto` などのラップは不要）。
 
@@ -118,12 +122,14 @@ API ではルートを `type: "object"` とし、各プロパティを `properti
 
 ---
 
-## パターン 2: 差し戻し付き申請承認フロー
+## パターン 2: 差し戻しを検討する申請承認フロー（モデル定義の注意）
 
-**シナリオ**: 承認者が却下する代わりに申請者へ差し戻し（修正して再提出を促す）できるフロー。
-**使いどき**: 不備があっても取り下げではなく修正して再提出させたい業務。
+**シナリオ**: 業務上は「却下で終了」ではなく「申請者へ差し戻して再提出」を想定することがある。
+**モデル JSON 上の制約**: エッジの `type` に使える値は `FlowType` に一致する文字列 `normal` / `submit` / `approve` / `reject` / `yes` / `no` のみ（`revert` は **含まれない**。詳細は [philosophy.md](philosophy.md) の FlowType 表、モノレポ内の単一ソースは `acomo-backend/src/workflow/model/edge.entity.ts`）。差し戻しの実行はプロセス実行時の差し戻し API・メタデータ（`revertToken` 等）の仕様に従う。
 
-### definition
+### definition（パターン 1 と同じ基本形を推奨）
+
+差し戻しの有無は設計・運用で決め、**保存する definition の edge.type には `revert` を書かない**。まずはパターン 1 と同様の `normal` / `submit` / `approve` / `reject` のみで表現する。
 
 ```json
 {
@@ -138,16 +144,14 @@ API ではルートを `type: "object"` とし、各プロパティを `properti
     { "from": "1", "to": "2", "type": ["normal"] },
     { "from": "2", "to": "3", "type": ["submit"] },
     { "from": "3", "to": "4", "type": ["approve"] },
-    { "from": "3", "to": "5", "type": ["reject"] },
-    { "from": "3", "to": "2", "type": ["revert"] }
+    { "from": "3", "to": "5", "type": ["reject"] }
   ]
 }
 ```
 
 **ポイント**:
-- 差し戻し先ノードに `"canRevert": true` を設定する
-- 差し戻しエッジ（`revert`）は承認ノード → 申請ノードに向かう
-- **dataSchema / policy**: 差し戻し後も申請は同じノード ID `"2"` のため、**パターン 1 と同じ dataSchema・policy** でよい（`"2"` のタスクで再び申請項目が `write` になる）
+- 申請タスクに `"canRevert": true` を付与できる（ノード属性。エッジの `FlowType` とは別）
+- **dataSchema / policy** はパターン 1 と同様でよい
 
 ---
 
@@ -202,7 +206,21 @@ API ではルートを `type: "object"` とし、各プロパティを `properti
     { "id": "3", "type": "parallelFork", "name": "並列審査開始" },
     { "id": "4", "type": "task", "name": "法務審査" },
     { "id": "5", "type": "task", "name": "経理審査" },
-    { "id": "6", "type": "parallelJoin", "name": "並列審査完了" },
+    {
+      "id": "6",
+      "type": "parallelJoin",
+      "name": "並列審査完了",
+      "conditions": [
+        {
+          "expression": {
+            "operator": ">=",
+            "expression1": "$token.approveCount",
+            "expression2": "$token.childTokenLength"
+          },
+          "destination": "7"
+        }
+      ]
+    },
     { "id": "7", "type": "event", "eventType": "end", "name": "終了（承認済み）" }
   ],
   "edges": [
@@ -220,8 +238,9 @@ API ではルートを `type: "object"` とし、各プロパティを `properti
 **ポイント**:
 - `parallelFork` ノードから複数のタスクノードへ `normal` エッジで分岐
 - 各並列タスクから `parallelJoin` へ `approve` エッジで合流
-- `parallelJoin` は全ルートが揃うと自動的に次へ進む
-- 並列処理中の却下ハンドリングが必要な場合は別途設計が必要
+- **`parallelJoin` には `conditions` が必須**（スキーマ上は省略可能だが、省略するとプロセス開始時にバックエンドが 500 になり、そのモデルは API から削除もできなくなる）。条件式では `$token.approveCount` / `$token.rejectCount` / `$token.childTokenLength` が使える。「全員承認で次へ」は上の定義例のとおり `{"operator": ">=", "expression1": "$token.approveCount", "expression2": "$token.childTokenLength"}`、`destination` に合流後の遷移先ノード ID を指定する
+- **条件式（`conditions[].expression`）は必ず `{operator, expression1, expression2}` のオブジェクト形式**で書く。`"$token.approveCount >= $token.childTokenLength"` のような**文字列 1 本の式はスキーマ違反**（バックエンド AJV の `binaryExpression` は object 型のみ受け付ける）
+- 却下側の経路が必要な場合は、`{"operator": ">", "expression1": "$token.rejectCount", "expression2": 0}` のような condition を追加して却下用の終了イベントへ振り分ける（各並列タスクから `parallelJoin` へ `reject` エッジも張る）
 - **policy**: 並列側は **タスク `"4"` と `"5"` それぞれ**に、参照・更新できるフィールドを定義する。法務だけが見てよい項目・経理だけが編集する項目など、業務に応じて分ける（同一の dataSchema でもノード ID ごとに read/write の組み合わせが異なってよい）
 
 ---
@@ -241,8 +260,8 @@ acomo createWorkflowModel '{
   "policy": { }
 }'
 
-# 2. モデルを公開（テナント内で利用可能にする）
-acomo publishWorkflowModel '{"modelId": "<作成されたmodelId>"}'
+# 2. モデルを公開（テナント内で利用可能にする。modelId は path パラメータ = named option）
+acomo publishWorkflowModel --modelId <作成されたmodelId>
 ```
 
 **注意**:
