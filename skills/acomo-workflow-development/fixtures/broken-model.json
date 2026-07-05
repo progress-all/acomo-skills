@@ -1,0 +1,47 @@
+{
+  "name": "壊れたモデル（エラーカタログ確認用）",
+  "description": "validate-model.mjs のエラー検出を確認するための意図的に壊したサンプル。修正して使わないこと。",
+  "definition": {
+    "nodes": [
+      { "id": "1", "type": "event", "eventType": "start", "name": "開始" },
+      { "id": "1b", "type": "event", "eventType": "start", "name": "二重の開始" },
+      { "id": "2", "type": "task", "name": "申請" },
+      { "id": "3", "type": "task", "name": "承認" },
+      { "id": "4", "type": "event", "eventType": "end", "name": "終了（承認済み）" },
+      { "id": "9", "type": "task", "name": "どこからも到達しないタスク" },
+      { "id": "10", "type": "parallelJoin", "name": "conditions のない並列合流（起動時 500 の原因）" }
+    ],
+    "edges": [
+      { "from": "1", "to": "2", "type": ["normal"] },
+      { "from": "2", "to": "3", "type": ["submit"] },
+      { "from": "3", "to": "4", "type": ["approve"] },
+      { "from": "3", "to": "2", "type": ["revert"] },
+      { "from": "3", "to": "999", "type": ["reject"] }
+    ]
+  },
+  "dataSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "itemName": {
+        "type": "string",
+        "title": "品名（_order・_acomoType なし）"
+      },
+      "status": {
+        "type": "string",
+        "title": "ステータス（エンジン管理と重複）",
+        "_order": 20,
+        "_acomoType": "string"
+      }
+    }
+  },
+  "policy": {
+    "申請": {
+      "itemName": "write"
+    },
+    "3": {
+      "itemName": "edit",
+      "unknownField": "read"
+    }
+  }
+}

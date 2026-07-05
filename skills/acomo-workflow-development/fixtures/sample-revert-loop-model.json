@@ -1,0 +1,185 @@
+{
+  "name": "休暇申請（差し戻しあり）",
+  "description": "差し戻しループ（canRevert + 逆向き submit エッジ）サンプル。承認者が差し戻すと申請者が修正して再提出できる休暇申請。ローカル開発スタックで実走確認済み（2026-07-05）。 actionPolicies の <ROLE_ID_...> プレースホルダは登録先テナントの実ロール ID（listRoles で確認）に置換してから使う。",
+  "definition": {
+    "nodes": [
+      {
+        "id": "1",
+        "name": "開始",
+        "type": "event",
+        "eventType": "start",
+        "actionPolicies": [
+          {
+            "type": "start",
+            "allow": {
+              "operator": "has",
+              "expression1": "$user.roles",
+              "expression2": "\"<ROLE_ID_社員>\""
+            },
+            "description": "社員は誰でも休暇申請を開始できます"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "name": "休暇の申請",
+        "type": "task",
+        "canRevert": true,
+        "actionPolicies": [
+          {
+            "type": "manage",
+            "allow": {
+              "operator": "==",
+              "expression1": "$user.id",
+              "expression2": "$executor(1).id"
+            },
+            "description": "起票した本人だけが申請内容を編集・提出できます"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "name": "人事の承認",
+        "type": "task",
+        "actionPolicies": [
+          {
+            "type": "manage",
+            "allow": {
+              "operator": "has",
+              "expression1": "$user.roles",
+              "expression2": "\"<ROLE_ID_人事担当者>\""
+            },
+            "description": "人事担当者ロールの保持者が承認・却下・差し戻しできます"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "name": "終了（承認済み）",
+        "type": "event",
+        "eventType": "end"
+      },
+      {
+        "id": "5",
+        "name": "終了（却下）",
+        "type": "event",
+        "eventType": "end"
+      }
+    ],
+    "edges": [
+      {
+        "from": "1",
+        "to": "2",
+        "type": [
+          "normal"
+        ]
+      },
+      {
+        "from": "2",
+        "to": "3",
+        "type": [
+          "submit"
+        ]
+      },
+      {
+        "from": "3",
+        "to": "4",
+        "type": [
+          "approve"
+        ]
+      },
+      {
+        "from": "3",
+        "to": "5",
+        "type": [
+          "reject"
+        ]
+      },
+      {
+        "from": "3",
+        "to": "2",
+        "type": [
+          "submit"
+        ]
+      }
+    ]
+  },
+  "dataSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "leaveType": {
+        "type": "string",
+        "enum": [
+          "有給休暇",
+          "慶弔休暇",
+          "特別休暇"
+        ],
+        "title": "休暇種別",
+        "description": "取得する休暇の種類",
+        "_order": 10,
+        "_acomoType": "enum"
+      },
+      "startDate": {
+        "type": "string",
+        "format": "date",
+        "title": "開始日",
+        "description": "休暇の開始日",
+        "_order": 20,
+        "_acomoType": "date"
+      },
+      "endDate": {
+        "type": "string",
+        "format": "date",
+        "title": "終了日",
+        "description": "休暇の終了日",
+        "_order": 30,
+        "_acomoType": "date"
+      },
+      "reason": {
+        "type": "string",
+        "title": "事由",
+        "description": "休暇の事由（慶弔・特別休暇は必ず記載）",
+        "_order": 40,
+        "_acomoType": "string"
+      },
+      "approverComment": {
+        "type": "string",
+        "title": "承認者コメント",
+        "description": "人事担当者が入力するコメント（差し戻し時は修正依頼を記載）",
+        "_order": 50,
+        "_acomoType": "string"
+      }
+    }
+  },
+  "policy": {
+    "2": {
+      "leaveType": "write",
+      "startDate": "write",
+      "endDate": "write",
+      "reason": "write",
+      "approverComment": "read"
+    },
+    "3": {
+      "leaveType": "read",
+      "startDate": "read",
+      "endDate": "read",
+      "reason": "read",
+      "approverComment": "write"
+    },
+    "4": {
+      "leaveType": "read",
+      "startDate": "read",
+      "endDate": "read",
+      "reason": "read",
+      "approverComment": "read"
+    },
+    "5": {
+      "leaveType": "read",
+      "startDate": "read",
+      "endDate": "read",
+      "reason": "read",
+      "approverComment": "read"
+    }
+  }
+}

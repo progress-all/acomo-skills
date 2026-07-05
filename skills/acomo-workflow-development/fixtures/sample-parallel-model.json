@@ -1,0 +1,328 @@
+{
+  "name": "採用稟議（並列審査）",
+  "description": "並列審査（parallelFork / parallelJoin）サンプル。経理と人事が並行審査し、全承認で管理者の最終承認へ合流する採用稟議。parallelJoin の conditions 必須（欠落すると起動時 500）の正しい書き方の実例。ローカル開発スタックで実走確認済み（2026-07-05）。 並列審査タスクは承認のみ（却下は最終承認者に集約する設計）のため W_APPROVE_NO_REJECT 警告が 2 件出るが意図的。 actionPolicies の <ROLE_ID_...> プレースホルダは登録先テナントの実ロール ID（listRoles で確認）に置換してから使う。",
+  "definition": {
+    "nodes": [
+      {
+        "id": "1",
+        "name": "開始",
+        "type": "event",
+        "eventType": "start",
+        "actionPolicies": [
+          {
+            "type": "start",
+            "allow": {
+              "operator": "has",
+              "expression1": "$user.roles",
+              "expression2": "\"<ROLE_ID_社員>\""
+            },
+            "description": "社員は誰でも採用稟議を開始できます"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "name": "採用の申請",
+        "type": "task",
+        "actionPolicies": [
+          {
+            "type": "manage",
+            "allow": {
+              "operator": "==",
+              "expression1": "$user.id",
+              "expression2": "$executor(1).id"
+            },
+            "description": "起票した本人だけが申請内容を編集・提出できます"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "name": "並列審査開始",
+        "type": "parallelFork"
+      },
+      {
+        "id": "4",
+        "name": "経理の審査",
+        "type": "task",
+        "actionPolicies": [
+          {
+            "type": "manage",
+            "allow": {
+              "operator": "has",
+              "expression1": "$user.roles",
+              "expression2": "\"<ROLE_ID_経理担当者>\""
+            },
+            "description": "経理担当者ロールの保持者が予算面を審査します"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "name": "人事の審査",
+        "type": "task",
+        "actionPolicies": [
+          {
+            "type": "manage",
+            "allow": {
+              "operator": "has",
+              "expression1": "$user.roles",
+              "expression2": "\"<ROLE_ID_人事担当者>\""
+            },
+            "description": "人事担当者ロールの保持者が要員計画面を審査します"
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "name": "並列審査完了",
+        "type": "parallelJoin",
+        "conditions": [
+          {
+            "destination": "7",
+            "type": "normal",
+            "expression": {
+              "operator": ">=",
+              "expression1": "$token.approveCount",
+              "expression2": "$token.childTokenLength"
+            }
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "name": "管理者の最終承認",
+        "type": "task",
+        "actionPolicies": [
+          {
+            "type": "manage",
+            "allow": {
+              "operator": "has",
+              "expression1": "$user.roles",
+              "expression2": "\"<ROLE_ID_システム管理者>\""
+            },
+            "description": "システム管理者ロールの保持者が最終承認・却下できます"
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "name": "終了（採用決定）",
+        "type": "event",
+        "eventType": "end"
+      },
+      {
+        "id": "9",
+        "name": "終了（見送り）",
+        "type": "event",
+        "eventType": "end"
+      }
+    ],
+    "edges": [
+      {
+        "from": "1",
+        "to": "2",
+        "type": [
+          "normal"
+        ]
+      },
+      {
+        "from": "2",
+        "to": "3",
+        "type": [
+          "submit"
+        ]
+      },
+      {
+        "from": "3",
+        "to": "4",
+        "type": [
+          "normal"
+        ]
+      },
+      {
+        "from": "3",
+        "to": "5",
+        "type": [
+          "normal"
+        ]
+      },
+      {
+        "from": "4",
+        "to": "6",
+        "type": [
+          "approve"
+        ]
+      },
+      {
+        "from": "5",
+        "to": "6",
+        "type": [
+          "approve"
+        ]
+      },
+      {
+        "from": "6",
+        "to": "7",
+        "type": [
+          "normal"
+        ]
+      },
+      {
+        "from": "7",
+        "to": "8",
+        "type": [
+          "approve"
+        ]
+      },
+      {
+        "from": "7",
+        "to": "9",
+        "type": [
+          "reject"
+        ]
+      }
+    ]
+  },
+  "dataSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "positionTitle": {
+        "type": "string",
+        "title": "募集ポジション",
+        "description": "採用したい職種・ポジション名",
+        "_order": 10,
+        "_acomoType": "string"
+      },
+      "department": {
+        "type": "string",
+        "enum": [
+          "技術部",
+          "管理部",
+          "営業部"
+        ],
+        "title": "配属部署",
+        "description": "採用者の配属先部署",
+        "_order": 20,
+        "_acomoType": "enum"
+      },
+      "headcount": {
+        "type": "number",
+        "title": "採用人数",
+        "description": "採用予定の人数",
+        "_order": 30,
+        "_acomoType": "number"
+      },
+      "employmentType": {
+        "type": "string",
+        "enum": [
+          "正社員",
+          "契約社員",
+          "業務委託"
+        ],
+        "title": "雇用形態",
+        "description": "採用者の雇用形態",
+        "_order": 40,
+        "_acomoType": "enum"
+      },
+      "startDate": {
+        "type": "string",
+        "format": "date",
+        "title": "入社希望日",
+        "description": "採用者の入社を希望する日付",
+        "_order": 50,
+        "_acomoType": "date"
+      },
+      "reason": {
+        "type": "string",
+        "title": "採用理由",
+        "description": "採用が必要な背景・理由",
+        "_order": 60,
+        "_acomoType": "string"
+      },
+      "financeComment": {
+        "type": "string",
+        "title": "経理審査コメント",
+        "description": "経理担当者が入力する予算面のコメント",
+        "_order": 70,
+        "_acomoType": "string"
+      },
+      "hrComment": {
+        "type": "string",
+        "title": "人事審査コメント",
+        "description": "人事担当者が入力する要員計画面のコメント",
+        "_order": 80,
+        "_acomoType": "string"
+      },
+      "finalComment": {
+        "type": "string",
+        "title": "最終承認コメント",
+        "description": "管理者が入力する最終判断のコメント",
+        "_order": 90,
+        "_acomoType": "string"
+      }
+    }
+  },
+  "policy": {
+    "2": {
+      "positionTitle": "write",
+      "department": "write",
+      "headcount": "write",
+      "employmentType": "write",
+      "startDate": "write",
+      "reason": "write"
+    },
+    "4": {
+      "positionTitle": "read",
+      "department": "read",
+      "headcount": "read",
+      "employmentType": "read",
+      "startDate": "read",
+      "reason": "read",
+      "financeComment": "write"
+    },
+    "5": {
+      "positionTitle": "read",
+      "department": "read",
+      "headcount": "read",
+      "employmentType": "read",
+      "startDate": "read",
+      "reason": "read",
+      "hrComment": "write"
+    },
+    "7": {
+      "positionTitle": "read",
+      "department": "read",
+      "headcount": "read",
+      "employmentType": "read",
+      "startDate": "read",
+      "reason": "read",
+      "financeComment": "read",
+      "hrComment": "read",
+      "finalComment": "write"
+    },
+    "8": {
+      "positionTitle": "read",
+      "department": "read",
+      "headcount": "read",
+      "employmentType": "read",
+      "startDate": "read",
+      "reason": "read",
+      "financeComment": "read",
+      "hrComment": "read",
+      "finalComment": "read"
+    },
+    "9": {
+      "positionTitle": "read",
+      "department": "read",
+      "headcount": "read",
+      "employmentType": "read",
+      "startDate": "read",
+      "reason": "read",
+      "financeComment": "read",
+      "hrComment": "read",
+      "finalComment": "read"
+    }
+  }
+}

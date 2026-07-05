@@ -1,0 +1,87 @@
+{
+  "name": "経費申請・承認フロー（ハーネス動作サンプル）",
+  "description": "acomo-workflow-development スキルのハーネス動作確認用サンプル。基本の申請 → 承認 → 承認済み/却下の 1 段階承認フロー。",
+  "definition": {
+    "nodes": [
+      { "id": "1", "type": "event", "eventType": "start", "name": "開始" },
+      { "id": "2", "type": "task", "name": "経費の申請", "canRevert": true },
+      { "id": "3", "type": "task", "name": "経費の承認" },
+      { "id": "4", "type": "event", "eventType": "end", "name": "終了（承認済み）" },
+      { "id": "5", "type": "event", "eventType": "end", "name": "終了（却下）" }
+    ],
+    "edges": [
+      { "from": "1", "to": "2", "type": ["normal"] },
+      { "from": "2", "to": "3", "type": ["submit"] },
+      { "from": "3", "to": "4", "type": ["approve"] },
+      { "from": "3", "to": "5", "type": ["reject"] }
+    ]
+  },
+  "dataSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "itemName": {
+        "type": "string",
+        "title": "品名",
+        "description": "購入した物品の名称",
+        "_order": 10,
+        "_acomoType": "string"
+      },
+      "amount": {
+        "type": "number",
+        "title": "金額",
+        "description": "購入金額（円）",
+        "_order": 20,
+        "_acomoType": "number"
+      },
+      "purchaseDate": {
+        "type": "string",
+        "format": "date",
+        "title": "購入日",
+        "description": "物品を購入した日付",
+        "_order": 30,
+        "_acomoType": "date"
+      },
+      "category": {
+        "type": "string",
+        "enum": ["交通費", "消耗品", "接待費", "その他"],
+        "title": "費目",
+        "description": "経費の種別",
+        "_order": 40,
+        "_acomoType": "enum"
+      },
+      "reason": {
+        "type": "string",
+        "title": "申請理由",
+        "description": "購入の目的・理由",
+        "_order": 50,
+        "_acomoType": "string"
+      },
+      "approverComment": {
+        "type": "string",
+        "title": "承認者コメント",
+        "description": "承認者が入力するコメント",
+        "_order": 60,
+        "_acomoType": "string"
+      }
+    }
+  },
+  "policy": {
+    "2": {
+      "itemName": "write",
+      "amount": "write",
+      "purchaseDate": "write",
+      "category": "write",
+      "reason": "write",
+      "approverComment": "read"
+    },
+    "3": {
+      "itemName": "read",
+      "amount": "read",
+      "purchaseDate": "read",
+      "category": "read",
+      "reason": "read",
+      "approverComment": "write"
+    }
+  }
+}
