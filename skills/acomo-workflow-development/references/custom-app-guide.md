@@ -18,6 +18,7 @@ Phase 0〜6（モデル開発ループ） → カスタム UI が必要か? ─ 
 |---------|------|
 | 本ファイル | トラック全体・アーキテクチャ選定・スキャフォールドレシピ |
 | [screen-design.md](screen-design.md) | A1: モデル → 画面・フォーム・操作への写像規則と設計書テンプレート |
+| [spa-scaffold-minimal.md](spa-scaffold-minimal.md) | A2: (a) SPA 直呼び構成の最小 3 ファイル（Vite + dev proxy + SuperTokens）— 初速用の土台 |
 | [client-integration.md](client-integration.md) | A2: `@acomo/client` / 公開 API の呼び出しパターン（検証済み） |
 | [auth-integration.md](auth-integration.md) | A2: 認証統合（セッション透過 / Client Credentials / ローカル開発） |
 | [custom-app-e2e.md](custom-app-e2e.md) | A3: walkthrough JSON を正本にしたカスタム UI の E2E |
@@ -72,6 +73,8 @@ BFF は受け取った Bearer JWT を acomo の JWKS で検証し、そのまま
 1. **プロジェクト初期化** — 選んだフレームワークの標準ジェネレーターで作る。`@acomo/client` を依存に追加
    （npm 公開パッケージ。型のみ使う場合も入れる）。acomo 接続情報は環境変数にする
    （`ACOMO_URL` / 認証テナント ID。モデル ID もワークフローごとに環境変数化してハードコードしない）。
+   **(a) SPA 直呼び構成なら [spa-scaffold-minimal.md](spa-scaffold-minimal.md) の最小 3 ファイル**
+   （Vite proxy / SuperTokens 初期化 / client 初期化）から積む — references から都度組み立て直さない。
 2. **認証** — [auth-integration.md](auth-integration.md) の該当パターンを実装し、
    「サインイン → `getCurrentUser` 相当が通る」までを最初に確認する。**認証が通る前に画面を作らない。**
 3. **一覧画面** — `listMyProcesses`（`permitted=true` で「自分が操作できるプロセス」）から始める。

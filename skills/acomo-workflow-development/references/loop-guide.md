@@ -24,11 +24,15 @@
 **作業**:
 
 1. **モード判定** — ユーザーが開発者か非開発者か、接続先がローカル開発スタックか運用中テナントかを確認する。
-2. **接続確認** — `acomo getCurrentUser` / `acomo getCurrentTenant` で疎通・認証・テナントを確認する（acomo スキル参照）。
+2. **CLI バージョン確認** — `acomo --version` を確認する。acomo モノレポ内では `acomo-cli/package.json` の
+   `version` と突合し、乖離・未インストールなら `npm -w @acomo/cli run build` 後に
+   `node acomo-cli/dist/index.js`（= `acomo-cli/bin/acomo`）を `acomo` の代わりに使う（古いグローバル CLI での実走は
+   コマンド・スキーマの不一致を生む）。モノレポ外では npm の最新 `@acomo/cli` を使う。
+3. **接続確認** — `acomo getCurrentUser` / `acomo getCurrentTenant` で疎通・認証・テナントを確認する（acomo スキル参照）。
    - 認証エラー（終了コード 2）は試行錯誤せず、ユーザーに認証情報の準備を依頼する（acomo スキルの「認証エラー時の扱い」）。
    - ローカル開発スタックでの非対話認証は [walkthrough-testing.md](walkthrough-testing.md) の手順を使う。
-3. **権限確認** — モデルの作成・公開にはワークフロー管理者相当の権限が要る。`listWorkflowModels` が通るか確認する。
-4. **参照実装の確認（任意）** — 類似業務のモデルが既に対象テナント内にあれば取得して手本にする
+4. **権限確認** — モデルの作成・公開にはワークフロー管理者相当の権限が要る。`listWorkflowModels` が通るか確認する。
+5. **参照実装の確認（任意）** — 類似業務のモデルが既に対象テナント内にあれば取得して手本にする
    （`acomo listWorkflowModels` → `acomo getWorkflowModel --modelId <ID>`）。無ければ本スキル同梱の
    `fixtures/sample-*.json`（実走確認済みのお手本 4 本 — 一覧は [harness-guide.md](harness-guide.md)）を手本にする。
 
@@ -61,19 +65,23 @@
 **非開発者向けの補足**: JSON を見せて合意を取らない。フローを「誰が・何をして・どうなる」の文章と表で説明し、
 データ項目は「入力項目一覧（項目名・型・必須・誰が書けるか）」の表で確認する。
 
-**出口（DoD)**: ユーザーが「この流れ・この項目・この権限でよい」と口頭合意した draft がある。
+**draft の正本はファイル**: 会話に出す `acomo-workflow-model-draft` fenced ブロックはユーザー確認用の写し。
+同じ JSON を**毎回同じパス**（例: `/tmp/<モデル名>-draft.json`）に保存して更新し、Phase 2 以降の
+validate / walkthrough / 登録は**このファイルを入力**にする（会話からの貼り直し・手写しで JSON が揺れるのを防ぐ）。
+
+**出口（DoD)**: ユーザーが「この流れ・この項目・この権限でよい」と口頭合意した draft ファイルがある。
 
 ---
 
 ## Phase 2: 静的検証（エージェント自律ループ）
 
-**入口**: draft がある。
+**入口**: draft ファイルがある（Phase 1 の正本ファイル）。
 
 **作業**:
 
 ```bash
-# draft を一時ファイルに保存して検証
-npm run workflow:validate -- /tmp/draft.json
+# draft の正本ファイルを検証（更新のたびに同じファイルで再実行）
+npm run workflow:validate -- /tmp/<モデル名>-draft.json
 ```
 
 1. **エラー（E_*）は全件修正**する。修正はエージェントが自律で行い、ユーザーへの報告は結果のみでよい。
@@ -121,8 +129,10 @@ acomo createWorkflowModel '{"name":"...","description":"...","definition":{...},
    - 各遷移後に**現在ノードが計画どおりか**を確認し、記録する。
 4. **証跡** — 経路ごとに「開始プロセス ID・実行アクション列・到達した終了ノード名」を記録し、ユーザーへ提示する。
 
-**アクター（実行ユーザー）の注意**: actionPolicies でタスクごとに実行者が制限される。経路上のタスクを実行できる
-ユーザー（ロール・グループ）を事前に確認し、必要なら複数ユーザーの認証を切り替えて実走する。
+**アクター（実行ユーザー）の注意**: actionPolicies でタスクごとに実行者が制限される。計画冒頭の
+**アクター表**（ハーネスが actionPolicies から生成）の「テストで使うユーザー」列を、実走前に
+`listRoles` / `listUsers` の実値で**先に全部埋め**、経路の途中で都度調べない。必要なら複数ユーザーの認証を
+切り替えて実走する（手順: [walkthrough-testing.md](walkthrough-testing.md)）。
 
 **出口（DoD)**: 全経路が期待した終了ノードに到達。権限どおりに「操作できない人には操作が出ない」ことも最低 1 ケース確認。
 

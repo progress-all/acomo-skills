@@ -44,8 +44,16 @@ acomo getCurrentUser   # 疎通確認
 
 ## アクター切り替え
 
-タスクの actionPolicies により「誰が実行できるか」が縛られる。計画の「実行者」ヒントを見て、
-経路上の各タスクを実行できるユーザーでトークンを取り直す（同一ユーザーで通せる場合はそのままでよい）。
+タスクの actionPolicies により「誰が実行できるか」が縛られる。**実走を始める前に**、計画冒頭の
+**アクター表**（walkthrough-plan が actionPolicies から生成。`--json` では `actors[]`）の
+「テストで使うユーザー」列を全部埋める。埋め方は機械的に:
+
+1. `acomo listRoles` でロール ID → ロール名の対応を取る（アクター表の `roleId` と突合）
+2. `acomo listUsers` で各ロールを持つユーザーを探し、`kind: 'role'` の行に割り当てる
+3. `kind: 'executor'` の行は新たにユーザーを探さない — `executorOfNode` が指すノードの行に割り当てた
+   ユーザーと**同一ユーザー**を書く（例: 「起票者本人だけ編集可」のタスクは開始ノードと同じユーザー）
+4. 各ユーザーのロールに **`Engine:execute` を含むこと**を確認する（無ければ下記の curl でロール付与）
+5. 表が埋まってから、経路上の各タスクをそのユーザーのトークンで実行する（同一ユーザーで通せる場合はそのままでよい）
 
 - 実行できないはずのユーザーで操作して**拒否されること**も最低 1 ケース確認する（権限どおりに動く証跡になる）。
 - **テスト用アクターの準備**（ローカル開発スタックで実走確認・2026-07-05）: 各アクターのロールに、モデルの actionPolicies が参照するロール + `Engine:execute` を含むロールが必要。ロール付与（`updateUser`）は OpenAPI 上 requestBody 未定義で CLI から body を渡せないため、curl で行う: `curl -X PUT $BASE/api/v1/users/<userId> -H "Authorization: Bearer <管理者token>" -H "x-tenant-id: <tenantId>" -H "Content-Type: application/json" -d '{"name":"...","email":"...","roleIds":["<roleId>", ...]}'`（`listUsers` / `listRoles` で id を確認）。

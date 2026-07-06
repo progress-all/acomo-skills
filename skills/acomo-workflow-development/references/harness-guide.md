@@ -78,6 +78,7 @@ PASS するお手本（すべてローカル実走確認済み）:
 
 開始イベントから各終了イベントまでの**経路を列挙**し、経路ごとに次を出力する。
 
+- **アクター表** — 経路に登場するノードの actionPolicies を「ロール「X」の保持者」「ノード N の実行者本人」に機械的に読み下した表（冒頭に出力）。実走前に「テストで使うユーザー」列を `listRoles` / `listUsers` の実値で埋めてからトークンを取る。実行者の突合を経路の途中で都度やらないための正本
 - 各ステップの CLI コマンド（`startWorkflowProcess` → `submit/approve/reject`。policy の write 項目から生成したサンプルデータを**アクションの body（フラットな JSON）**として同梱）
 - 同じ操作の画面手順（非開発者向けの案内に使う）
 - 実行者ヒント（definition の actionPolicies の description から抽出）
@@ -86,7 +87,18 @@ PASS するお手本（すべてローカル実走確認済み）:
 - **循環エッジ**（差し戻し・再提出系）は経路に含めず巻末に列挙 — 該当業務があれば手動で 1 回通す
 - 記録テンプレート（経路・プロセス ID・到達ノードの表）
 
-`--json` で機械可読の計画（`paths[].steps[]`、`cycleEdges`、`notes`）を出力する。エージェントが実走を自動化するときはこちらを使う。
+`--json` で機械可読の計画（`actors[]`、`paths[].steps[]`、`cycleEdges`、`notes`）を出力する。エージェントが実走を自動化するときはこちらを使う。
+
+### `--json` の `actors[]` フィールド
+
+| フィールド | 内容 |
+|-----------|------|
+| `nodeId` / `nodeName` | 実行者制限のあるノード |
+| `policies[].kind` | `role`（ロール保持者）/ `executor`（別ノードの実行者本人）/ `expression`（その他の式）/ `unknown` |
+| `policies[].roleId` | `kind: 'role'` のとき必要なロール ID（`listRoles` で実値と突合する） |
+| `policies[].executorOfNode` | `kind: 'executor'` のとき「このノードの実行者本人」のノード ID |
+| `policies[].summary` / `description` | 読み下し文と definition 上の説明 |
+| `policies[].allow` | 元の allow 式（そのまま） |
 
 ### `--json` のステップフィールド
 
