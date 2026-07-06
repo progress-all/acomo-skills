@@ -67,6 +67,76 @@ function actorHint(node) {
   return hints.length > 0 ? [...new Set(hints)].join(' / ') : null
 }
 
+/**
+ * actionPolicies の allow 式を「誰が実行できるか」に機械的に読み下す（アクター表用）。
+ * 頻出 2 形（ロール保持者 / 起票者本人）はテンプレ文に、その他は式のまま出す。
+ */
+function classifyAllow(allow) {
+  if (!allow || typeof allow !== 'object') {
+    return { kind: 'unknown', summary: '式なし（definition を確認すること）' }
+  }
+  const { operator, expression1, expression2 } = allow
+  if (operator === 'has' && (expression1 === '$user.roles' || expression2 === '$user.roles')) {
+    const other = expression1 === '$user.roles' ? expression2 : expression1
+    const roleId = typeof other === 'string' ? other.replace(/^"+|"+$/g, '') : String(other)
+    return { kind: 'role', roleId, summary: `ロール「${roleId}」の保持者` }
+  }
+  const exprs = [expression1, expression2].filter(e => typeof e === 'string')
+  const executorMatch = exprs.map(e => /^\$executor\((.+)\)\.id$/.exec(e)).find(Boolean)
+  if (operator === '==' && exprs.includes('$user.id') && executorMatch) {
+    return {
+      kind: 'executor',
+      executorOfNode: executorMatch[1],
+      summary: `ノード ${executorMatch[1]} の実行者本人（起票者本人など）`,
+    }
+  }
+  return { kind: 'expression', summary: `式で判定: ${JSON.stringify(allow)}` }
+}
+
+/**
+ * 経路に登場するノードの actionPolicies を集約し、アクター表を作る。
+ * ウォークスルー実走前に「どのユーザーでトークンを取るか」を決める正本になる。
+ */
+function collectActors(graph, paths) {
+  const nodeIds = []
+  const seen = new Set()
+  const push = id => {
+    if (id && !seen.has(id)) {
+      seen.add(id)
+      nodeIds.push(id)
+    }
+  }
+  for (const path of paths) {
+    for (const step of path.steps) {
+      if (step.kind === 'start') {
+        push(step.node.id)
+      } else if (step.kind === 'action') {
+        push(step.node.id)
+      } else if (step.kind === 'parallel') {
+        for (const branch of step.branches ?? []) {
+          for (const t of branch.tasks) {
+            if (!t.end) {
+              push(t.node.id)
+            }
+          }
+        }
+      }
+    }
+  }
+  const actors = []
+  for (const id of nodeIds) {
+    const node = graph.nodesById.get(id)
+    const policies = (node?.actionPolicies ?? []).map(p => ({
+      type: p?.type ?? null,
+      description: p?.description ?? null,
+      allow: p?.allow ?? null,
+      ...classifyAllow(p?.allow),
+    }))
+    actors.push({ nodeId: id, nodeName: node?.name ?? id, policies })
+  }
+  return actors
+}
+
 /** parallelFork を展開する: 各ブランチを parallelJoin まで直進で辿る */
 function expandParallel(graph, forkNode, notes) {
   const branches = []
@@ -227,7 +297,7 @@ function renderTaskStep(lines, model, graph, node, action, { nodeIdSuffix = fals
   }
 }
 
-function renderMarkdown(model, graph, { paths, cycleEdges, notes }) {
+function renderMarkdown(model, graph, { paths, cycleEdges, notes, actors }) {
   const lines = []
   lines.push(`# ウォークスルー計画: ${model.name ?? '(名称未設定)'}`)
   lines.push('')
@@ -238,6 +308,24 @@ function renderMarkdown(model, graph, { paths, cycleEdges, notes }) {
   lines.push('- 各遷移後の確認: `acomo getWorkflowProcess --processId <PROCESS_ID>` の `token.nodeId` が期待ノードであること（残アクションは `getProcessWithNodeActions`）')
   lines.push('- タスクごとの実行者制限（actionPolicies）に合わせ、必要なら実行ユーザーを切り替えること')
   lines.push('')
+
+  if (actors.length > 0) {
+    lines.push('## アクター表（実走前に「テストで使うユーザー」列を埋める）')
+    lines.push('')
+    lines.push('- どのユーザーも**ロールに `Engine:execute` を含むこと**（actionPolicies 以前の実行前提）')
+    lines.push('- ロール ID・ユーザーの実値は `acomo listRoles` / `acomo listUsers` で確認する')
+    lines.push('')
+    lines.push('| ノード（作業） | 実行できる人（actionPolicies の読み下し） | テストで使うユーザー |')
+    lines.push('|----------------|------------------------------------------|----------------------|')
+    for (const actor of actors) {
+      const requirement =
+        actor.policies.length > 0
+          ? actor.policies.map(p => p.description ? `${p.summary} — ${p.description}` : p.summary).join(' / ')
+          : '制限なし（actionPolicies 未設定）'
+      lines.push(`| ${actor.nodeName}（id=${actor.nodeId}） | ${requirement} | （記入） |`)
+    }
+    lines.push('')
+  }
 
   paths.forEach((path, i) => {
     const actions = path.steps.filter(s => s.kind === 'action').map(s => ACTION_LABEL[s.action])
@@ -335,12 +423,15 @@ try {
 
 const graph = analyzeGraph(model.definition ?? {})
 const result = enumeratePaths(graph)
+result.actors = collectActors(graph, result.paths)
 
 if (jsonMode) {
   console.log(
     JSON.stringify(
       {
         name: model.name ?? null,
+        // 経路に登場するノードの実行者制限。実走時のトークン切り替え・テストユーザー割り当ての正本
+        actors: result.actors,
         paths: result.paths.map(p => ({
           outcome: { id: p.outcome.id, name: p.outcome.name },
           steps: p.steps.map(s => {
